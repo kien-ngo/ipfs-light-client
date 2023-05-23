@@ -18,6 +18,7 @@ type SortQuery = {
 };
 
 export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
+  let timer: NodeJS.Timeout | null = null;
   const [files, setFiles] = useState<IFile[]>(_files);
   const [filteredFiles, setFilteredFiles] = useState<IFile[]>(_files);
   const [sortQuery, setSortQuery] = useState<SortQuery>({
@@ -111,7 +112,6 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
       sortQuery.size === "Default"
     ) {
       sortQuery.name = "A-Z";
-      return;
     }
     if (sortQuery.name !== "Default") {
       console.log("Sort by name: ", sortQuery.name);
@@ -164,6 +164,13 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
     setFilteredFiles(files);
   }, [files]);
 
+  const debounceSearch = (newValue: string) => {
+    clearTimeout(timer as NodeJS.Timeout);
+    timer = setTimeout(() => {
+      searchItem(newValue);
+    }, 400);
+  };
+  
   return (
     <>
       <div className="flex flex-col pb-32 pt-10">
@@ -176,7 +183,7 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
           <input
             type="text"
             ref={searchInputRef}
-            onChange={(e) => searchItem(e.target.value)}
+            onChange={(e) => debounceSearch(e.target.value)}
             placeholder="Search for name/cid"
             className="rounded-full border border-gray-400 py-2 px-4 w-[500px] bg-transparent"
           />
