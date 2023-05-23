@@ -18,6 +18,7 @@ type SortQuery = {
 };
 
 export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
+  console.log({ _files });
   let timer: NodeJS.Timeout | null = null;
   const [files, setFiles] = useState<IFile[]>(_files);
   const [filteredFiles, setFilteredFiles] = useState<IFile[]>(_files);
@@ -68,18 +69,16 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
     setToPinHash(hash);
     setPinningHash(true);
     setShowHashPinToast(true);
-    await Promise.all([
-      // Pin to "/ipfs/<hash>"
-      fetch("/api/pin/add", {
-        method: "POST",
-        body: JSON.stringify({ hash }),
-      }),
-      // cp /ipfs/<hash> to /<name>
-      fetch("/api/files/cp", {
-        method: "POST",
-        body: JSON.stringify({ originalPath: `ipfs/${hash}`, newPath: name }),
-      }),
-    ]);
+    // Pin to "/ipfs/<hash>"
+    await fetch("/api/pin/add", {
+      method: "POST",
+      body: JSON.stringify({ hash }),
+    });
+    // cp /ipfs/<hash> to /<name>
+    await fetch("/api/files/cp", {
+      method: "POST",
+      body: JSON.stringify({ originalPath: `ipfs/${hash}`, newPath: name }),
+    });
     setPinningHash(false);
     setToPinHash("");
   };
@@ -170,7 +169,7 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
       searchItem(newValue);
     }, 400);
   };
-  
+
   return (
     <>
       <div className="flex flex-col pb-32 pt-10">
@@ -269,7 +268,7 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
                 className="w-fit pl-1 cursor-pointer"
                 onChange={(e) => setQtyPerPage(parseInt(e.target.value))}
               >
-                {[20, 40, 60, 80, 100].map((num) => (
+                {[20, 40, 60, 80, 100, 200, 300].map((num) => (
                   <option key={num} value={num}>
                     {num}
                   </option>

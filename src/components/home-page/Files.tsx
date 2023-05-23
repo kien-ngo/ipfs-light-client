@@ -19,23 +19,21 @@ const Files = ({
     files[toEditIndex].Path = newName;
     setChange([...files]);
     // Update the MFS
-    await Promise.all([
-      fetch("/api/files/cp", {
-        method: "POST",
-        body: JSON.stringify({
-          originalPath: toEditPathName,
-          newPath: newName,
-        }),
+    await fetch("/api/files/cp", {
+      method: "POST",
+      body: JSON.stringify({
+        originalPath: toEditPathName,
+        newPath: newName,
       }),
-      fetch("/api/files/rm", {
+    }),
+      await fetch("/api/files/rm", {
         method: "POST",
         body: JSON.stringify({
           path: toEditPathName,
           isDirectory: files[toEditIndex].Type === "directory",
         }),
       }),
-    ]);
-    setToEditIndex(-1);
+      setToEditIndex(-1);
   };
 
   const cancelNameEdit = () => {
@@ -47,6 +45,19 @@ const Files = ({
     setShowHashCopyToast(true);
     setTimeout(() => setShowHashCopyToast(false), 2000);
   };
+
+  const exportToCar = async (
+    fileName: string,
+    downloadPath: string,
+    cid: string
+  ) => {
+    alert("??/");
+    await fetch("/api/dag/export", {
+      method: "POST",
+      body: JSON.stringify({ fileName, downloadPath, cid }),
+    });
+  };
+
   return (
     <>
       <div className="mx-auto flex flex-col mt-4 w-full max-w-[90vw] lg:max-w-[900px]">
@@ -89,7 +100,7 @@ const Files = ({
                     <div className="text-sm " title={file.Hash}>
                       {truncateString(file.Hash)}
                     </div>
-                    <svg viewBox="0 0 48 48" width={18} height={18}>
+                    <svg viewBox="0 0 48 48" width={18} height={18} className="ml-2">
                       <path d="M0 0h48v48H0z" fill="none"></path>
                       <path
                         d="M32 2H8C5.79 2 4 3.79 4 6v28h4V6h24V2zm6 8H16c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 4 4 4h22c2.21 0 4-1.79 4-4V14c0-2.21-1.79-4-4-4zm0 32H16V14h22v28z"
@@ -144,14 +155,21 @@ const Files = ({
               {toggledHash === file.Hash && (
                 <div className="bg-gray-700 flex flex-row justify-evenly border border-gray-400 mb-3 rounded-b-lg px-3 py-2 h-14 cursor-pointer w-[99%] mx-auto">
                   {file.isPinned ? (
-                    <button className="hover:underline text-red-500">
+                    <button className="hover:underline text-red-500 select-none">
                       Remove pin
                     </button>
                   ) : (
-                    <button>Set pin</button>
+                    <button className="select-none">Set pin</button>
                   )}
-                  <button>Export to .CAR</button>
-                  {file.Type === "directory" && <button>View folder</button>}
+                  <button
+                    className="select-none"
+                    onClick={() => exportToCar("test.car", ".", file.Hash)}
+                  >
+                    Export to .CAR
+                  </button>
+                  {file.Type === "directory" && (
+                    <button className="select-none">View folder</button>
+                  )}
                 </div>
               )}
             </Fragment>
