@@ -72,3 +72,54 @@ export async function fetchPins(type: PinType = "recursive"): Promise<PinObj> {
   const data: PinObj = await res.json();
   return data;
 }
+
+interface IOpenPeer {
+  Addr: `/${string}/${string}/${string}/${string}`;
+  Peer: string;
+  Latency: string;
+  Direction: number;
+  Streams: { Protocol: string }[];
+  Identify: {
+    ID: string;
+    PublicKey: string;
+    Addresses: string[];
+    AgentVersion: string;
+    ProtocolVersion: string;
+    Protocols: string[];
+  };
+}
+
+export interface IOpenPeerModified extends IOpenPeer {
+  ipAddress: string;
+  ipVersion: string;
+  protocol: string;
+  port: string;
+  location: string;
+  connection: string;
+  openStream: string;
+  indexLabel: number;
+}
+
+export async function fetchOpenPeers(): Promise<IOpenPeerModified[]> {
+  const peerList: { Peers: IOpenPeer[] } = await fetch(
+    `${BASE_URL}/swarm/peers?verbose=true&streams=true&latency=true&direction=true&identify=true`,
+    { method: "POST" }
+  ).then((r) => r.json());
+  const peers: IOpenPeerModified[] = peerList.Peers.map((item, index) => {
+    const [ipVersion, ipAddress, protocol, port, transport] =
+      item.Addr.substring(1).split("/");
+    const obj = {
+      ipVersion,
+      ipAddress,
+      protocol,
+      port,
+      location: "Unknown",
+      connection: `${ipVersion}*${protocol}*${transport ?? ""}`,
+      openStream: item.Streams?.map((o) => o.Protocol).join(", ") ?? "N/A",
+      indexLabel: index + 1,
+    };
+    const res: IOpenPeerModified = Object.assign(item, obj);
+    return res;
+  });
+  return peers;
+}

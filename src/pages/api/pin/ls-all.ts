@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { PinObj, fetchPins } from "@/utils/api";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PinObj, fetchPins } from "../../../src/utils/api";
 
 export default async function handler(
   req: NextApiRequest,

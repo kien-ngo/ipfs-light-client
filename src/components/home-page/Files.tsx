@@ -2,6 +2,7 @@ import { IFile } from "@/app/page";
 import { Fragment, memo, useState } from "react";
 import ChangePathNameModal from "./ChangePathNameModal";
 import { truncateString } from "@/utils/string";
+import { PRIVATE_GATEWAY } from "@/const";
 
 const Files = ({
   files,
@@ -100,7 +101,12 @@ const Files = ({
                     <div className="text-sm " title={file.Hash}>
                       {truncateString(file.Hash)}
                     </div>
-                    <svg viewBox="0 0 48 48" width={18} height={18} className="ml-2">
+                    <svg
+                      viewBox="0 0 48 48"
+                      width={18}
+                      height={18}
+                      className="ml-2"
+                    >
                       <path d="M0 0h48v48H0z" fill="none"></path>
                       <path
                         d="M32 2H8C5.79 2 4 3.79 4 6v28h4V6h24V2zm6 8H16c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 4 4 4h22c2.21 0 4-1.79 4-4V14c0-2.21-1.79-4-4-4zm0 32H16V14h22v28z"
@@ -167,9 +173,12 @@ const Files = ({
                   >
                     Export to .CAR
                   </button>
-                  {file.Type === "directory" && (
-                    <button className="select-none">View folder</button>
-                  )}
+                  <a
+                    className="select-none my-auto"
+                    href={`${PRIVATE_GATEWAY}/${file.Hash}`}
+                  >
+                    View {file.Type === "directory" ? "folder" : "file"}
+                  </a>
                 </div>
               )}
             </Fragment>

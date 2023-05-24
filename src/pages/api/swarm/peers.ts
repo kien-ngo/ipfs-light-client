@@ -1,11 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { FilePath, fetchFilePaths } from "@/utils/api";
+import { IOpenPeerModified, fetchOpenPeers } from "@/utils/api";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<FilePath[]>
+  res: NextApiResponse<IOpenPeerModified[]>
 ) {
-  const files: FilePath[] = await fetchFilePaths();
-  res.json(files);
+  const peers = await fetchOpenPeers();
+  res.json(peers);
 }

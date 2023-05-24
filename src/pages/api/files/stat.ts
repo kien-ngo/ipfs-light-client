@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { IFileStat, fetchFileStat } from "@/utils/api";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { IFileStat, fetchFileStat } from "../../../src/utils/api";
 
 export default async function handler(
   req: NextApiRequest,

@@ -20,7 +20,8 @@ export default function NodeProvider({
   children: ReactNode;
   _nodeInfo: TNodeInfo | null;
 }) {
-  const [nodeInfo, setNodeInfo] = useState<TNodeInfo | null>(_nodeInfo);
+  const [nodeInfo] = useState<TNodeInfo | null>(_nodeInfo);
+  console.log({_nodeInfo})
   return (
     <Context.Provider value={nodeInfo}>
       <>{children}</>
@@ -31,7 +32,7 @@ export default function NodeProvider({
 export const useNodeInfo = () => {
   const context = useContext(Context);
   if (context === undefined) {
-    throw new Error("useSupabase must be used inside SupabaseProvider");
+    throw new Error("useNodeInfo must be used inside NodeProvider");
   }
   return context;
 };

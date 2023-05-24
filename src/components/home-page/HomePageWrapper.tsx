@@ -18,7 +18,6 @@ type SortQuery = {
 };
 
 export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
-  console.log({ _files });
   let timer: NodeJS.Timeout | null = null;
   const [files, setFiles] = useState<IFile[]>(_files);
   const [filteredFiles, setFilteredFiles] = useState<IFile[]>(_files);
@@ -167,7 +166,7 @@ export default function HomePageWrapper({ _files }: { _files: IFile[] }) {
     clearTimeout(timer as NodeJS.Timeout);
     timer = setTimeout(() => {
       searchItem(newValue);
-    }, 400);
+    }, 200);
   };
 
   return (
