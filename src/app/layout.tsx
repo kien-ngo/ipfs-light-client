@@ -3,6 +3,8 @@ import { BASE_URL } from "@/const";
 import "./globals.css";
 import NodeProvider, { TNodeInfo } from "@/components/NodeProvider";
 import TabLayout from "@/components/TabLayout";
+import ConfigProvider from "@/components/ConfigProvider";
+import { TNodeConfig, fetchNodeConfig } from "@/utils/api";
 
 export const metadata = {
   title: "IPFS Client",
@@ -20,6 +22,7 @@ export default async function RootLayout({
     .then((r) => r.json())
     .catch((err) => console.error(err));
   console.timeEnd("started fetching pins");
+  const config: TNodeConfig = await fetchNodeConfig();
   return (
     <html lang="en">
       <head>
@@ -27,7 +30,9 @@ export default async function RootLayout({
       </head>
       <body className="min-h-[100vh] overflow-y-scroll flex flex-col">
         <NodeProvider _nodeInfo={res}>
-          <TabLayout>{children}</TabLayout>
+          <ConfigProvider _config={config}>
+            <TabLayout>{children}</TabLayout>
+          </ConfigProvider>
         </NodeProvider>
       </body>
     </html>

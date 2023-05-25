@@ -3,21 +3,13 @@
 import { HOSTNAME } from "@/const";
 import { useNodeInfo } from "../NodeProvider";
 import { useState } from "react";
-
-const CopyIcon = () => {
-  return (
-    <svg viewBox="0 0 48 48" width={18} height={18} className="mr-2 my-auto">
-      <path d="M0 0h48v48H0z" fill="none"></path>
-      <path
-        d="M32 2H8C5.79 2 4 3.79 4 6v28h4V6h24V2zm6 8H16c-2.21 0-4 1.79-4 4v28c0 2.21 1.79 4 4 4h22c2.21 0 4-1.79 4-4V14c0-2.21-1.79-4-4-4zm0 32H16V14h22v28z"
-        fill="#ffffff"
-      ></path>
-    </svg>
-  );
-};
+import CopyIcon from "../CopyIcon";
+import { useNodeConfig } from "../ConfigProvider";
+import BandwidthComponent from "./BandwidthComponent";
 
 export default function StatusPageComponent() {
   const nodeInfo = useNodeInfo();
+  const { nodeConfig } = useNodeConfig();
   const [showStringCopyToast, setShowStringCopyToast] =
     useState<boolean>(false);
   const copyString = (val: string) => {
@@ -28,25 +20,42 @@ export default function StatusPageComponent() {
   return (
     <>
       <div className="pt-20 flex flex-col mx-auto px-6 w-full">
-        <div>
-          <b>Peer ID:</b> {nodeInfo?.ID}
-        </div>
-        <div>
-          <b>Agent:</b> {nodeInfo?.AgentVersion}
-        </div>
-        <div>
-          <b>Protocol version:</b> {nodeInfo?.ProtocolVersion}
-        </div>
-        <div>
-          <b>Public key:</b> {nodeInfo?.PublicKey}
-        </div>
-        <div>
-          <b>Gateway:</b> {HOSTNAME}
-        </div>
-        {/* <div>API: {}</div> */}
+        <div className="mx-auto flex flex-row flex-wrap justify-center gap-5 w-[1000px]">
+          <div className="flex flex-col border border-gray p-3 flex-grow">
+            <div className="font-bold text-blue-500">INFO</div>
+            <div>
+              <b>Peer ID:</b> {nodeInfo?.ID}
+            </div>
+            <div>
+              <b>Agent:</b> {nodeInfo?.AgentVersion}
+            </div>
+            <div>
+              <b>Protocol version:</b> {nodeInfo?.ProtocolVersion}
+            </div>
+            <div>
+              <b>Public key:</b> {nodeInfo?.PublicKey}
+            </div>
+            <div>
+              <b>Gateway:</b> {HOSTNAME}
+            </div>
+            <div>
+              <b>API:</b> {nodeConfig.Addresses.API}{" "}
+              <label
+                htmlFor=""
+                className="cursor-pointer underline text-blue-500 font-bold"
+              >
+                Edit
+              </label>
+            </div>
+          </div>
 
-        <details className="mt-8 bg-gray-700">
-          <summary className="border-b cursor-pointer">Addresses</summary>
+          <BandwidthComponent />
+        </div>
+
+        <details className="mt-8 bg-gray-700 w-[1000px] mx-auto">
+          <summary className="border-b cursor-pointer pl-4 py-2">
+            Addresses
+          </summary>
           <div className="flex flex-col whitespace-nowrap pl-4 overflow-x-auto gap-2 py-4">
             {nodeInfo?.Addresses.map((item) => (
               <div
@@ -54,14 +63,19 @@ export default function StatusPageComponent() {
                 className="flex flex-row cursor-pointer hover:underline"
                 onClick={() => copyString(item)}
               >
-                <CopyIcon /> <span className="my-auto">{item}</span>
+                <CopyIcon />{" "}
+                <span className="my-auto max-w-[930px] overflow-x-hidden">
+                  {item}
+                </span>
               </div>
             ))}
           </div>
         </details>
 
-        <details className="mt-8 bg-gray-700">
-          <summary className="border-b cursor-pointer">Protocols</summary>
+        <details className="mt-8 bg-gray-700 w-[1000px] mx-auto">
+          <summary className="border-b cursor-pointer pl-4 py-2">
+            Protocols
+          </summary>
           <div className="flex flex-col whitespace-nowrap pl-4 overflow-x-auto gap-2 py-4">
             {nodeInfo?.Protocols.map((item) => (
               <div
@@ -69,7 +83,10 @@ export default function StatusPageComponent() {
                 className="flex flex-row cursor-pointer hover:underline"
                 onClick={() => copyString(item)}
               >
-                <CopyIcon /> <span className="my-auto">{item}</span>
+                <CopyIcon />{" "}
+                <span className="my-auto max-w-[930px] overflow-x-hidden">
+                  {item}
+                </span>
               </div>
             ))}
           </div>

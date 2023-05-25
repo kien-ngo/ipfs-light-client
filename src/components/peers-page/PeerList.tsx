@@ -8,6 +8,13 @@ const PeerList = ({ peers }: { peers: IOpenPeerModified[] }) => {
   const copyPeerList = (peerId: string) => {
     window.navigator.clipboard.writeText(peerId);
   };
+  const [showStringCopyToast, setShowStringCopyToast] =
+    useState<boolean>(false);
+  const copyString = (val: string) => {
+    window.navigator.clipboard.writeText(val);
+    setShowStringCopyToast(true);
+    setTimeout(() => setShowStringCopyToast(false), 2000);
+  };
   return (
     <>
       <div className="overflow-x-auto mx-auto w-[1400px] max-w-[90vw] mt-10 pb-40">
@@ -26,7 +33,7 @@ const PeerList = ({ peers }: { peers: IOpenPeerModified[] }) => {
           </thead>
           <tbody>
             {peers.map((item) => (
-              <tr className="hover" key={item.Peer}>
+              <tr className="hover" key={item.Identify.ID}>
                 <th>{item.indexLabel}</th>
                 {/* <th>{item.location}</th> */}
                 <th>{item.Latency}</th>
@@ -55,8 +62,20 @@ const PeerList = ({ peers }: { peers: IOpenPeerModified[] }) => {
             ))}
           </tbody>
         </table>
+        {peers.length < 1 && (
+          <div className="text-center mt-6">No peer found</div>
+        )}
       </div>
-      <AddressesModal addresses={selectedAddresses} />
+      <AddressesModal addresses={selectedAddresses} copyString={copyString} />
+      {showStringCopyToast && (
+        <div className="toast toast-top mt-10">
+          <div className="alert alert-success">
+            <div>
+              <span>String copied.</span>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

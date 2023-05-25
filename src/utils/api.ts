@@ -123,3 +123,135 @@ export async function fetchOpenPeers(): Promise<IOpenPeerModified[]> {
   });
   return peers;
 }
+
+export type TNodeConfig = {
+  API: {
+    HTTPHeaders: {
+      "Access-Control-Allow-Origin": string[];
+    };
+  };
+  Addresses: {
+    API: string;
+    Announce: any[];
+    AppendAnnounce: any[];
+    Gateway: string;
+    NoAnnounce: any[];
+    Swarm: string[];
+  };
+  AutoNAT: {};
+  Bootstrap: string[];
+  DNS: {
+    Resolvers: {};
+  };
+  Datastore: {
+    BloomFilterSize: number;
+    GCPeriod: string;
+    HashOnRead: false;
+    Spec: {
+      mounts: any[];
+      type: string;
+    };
+    StorageGCWatermark: number;
+    SotrageMax: string;
+  };
+  Discovery: {
+    MNDS: {
+      Enabled: boolean;
+    };
+  };
+  Experimental: {
+    AcceleratedDHTClient: boolean;
+    FilestoreEnabled: boolean;
+    GraphsyncEnabled: boolean;
+    Libp2pStreamMounting: boolean;
+    OptimisticProvide: boolean;
+    OptimisticProvideJobsPoolSize: number;
+    P2pHttpProxy: boolean;
+    StrategicProviding: boolean;
+    UrlstoreEnabled: boolean;
+  };
+  Gateway: {
+    APICommands: string[];
+    HTTPHeaders: {
+      "Access-Control-Allow-Headers": string[];
+      "Access-Control-Allow-Methods": string[];
+      "Access-Control-Allow-Origin": string[];
+    };
+    NoDNSLink: boolean;
+    NoFetch: boolean;
+    PathPrefixes: any[];
+    PublicGateways: any;
+    RootRedirect: string;
+    Writable: boolean;
+  };
+  Identity: {
+    PeerID: string;
+  };
+  Internal: any;
+  Ipns: {
+    RecordLifetime: string;
+    RepublishPeriod: string;
+    ResolveCacheSize: number;
+  };
+  Migration: { DownloadSources: any[]; Keep: string };
+  Mounts: { FuseAllowOther: boolean; IPFS: string; IPNS: string };
+  Peering: {
+    Peers: [
+      {
+        Addrs: string[];
+        ID: string;
+      }
+    ];
+  };
+  Pinning: {
+    RemoteServices: {
+      [key in string]: {
+        API: { Endpoint: string };
+        Policies: {
+          MFS: { Enable: boolean; PinName: string; RepinInterval: string };
+        };
+      };
+    };
+  };
+  Plugins: { Plugins: any };
+  Provider: { Strategy: string };
+  Pubsub: { DisableSigning: boolean; Router: string };
+  Reprovider: any;
+  Routing: { Methods: any; Routers: any };
+  Swarm: {
+    AddrFilters: any;
+    ConnMgr: {
+      GracePeriod: string;
+      HighWater: number;
+      LowWater: number;
+      Type: string;
+    };
+    DisableBandwidthMetrics: boolean;
+    DisableNatPortMap: boolean;
+    RelayClient: any;
+    RelayService: any;
+    ResourceMgr: { Limits: any };
+    Transports: { Multiplexers: any; Network: any; Security: any };
+  };
+};
+
+export async function fetchNodeConfig(): Promise<TNodeConfig> {
+  const config: TNodeConfig = await fetch(`${BASE_URL}/config/show`, {
+    method: "POST",
+  }).then((r) => r.json());
+  return config;
+}
+
+export type TBandwidthStats = {
+  TotalIn: number;
+  TotalOut: number;
+  RateIn: number;
+  RateOut: number;
+};
+
+export async function fetchBandwidthStats(): Promise<TBandwidthStats> {
+  const stats: TBandwidthStats = await fetch("/api/stats/bw").then((r) =>
+    r.json()
+  );
+  return stats;
+}

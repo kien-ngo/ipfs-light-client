@@ -52,7 +52,6 @@ const Files = ({
     downloadPath: string,
     cid: string
   ) => {
-    alert("??/");
     await fetch("/api/dag/export", {
       method: "POST",
       body: JSON.stringify({ fileName, downloadPath, cid }),

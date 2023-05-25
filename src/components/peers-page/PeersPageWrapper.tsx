@@ -1,6 +1,6 @@
 "use client";
 
-import { IOpenPeerModified, fetchOpenPeers } from "@/utils/api";
+import { IOpenPeerModified } from "@/utils/api";
 import { useRef, useState } from "react";
 import PeerList from "./PeerList";
 import ScrollTopButton from "../home-page/ScrollTopButton";
